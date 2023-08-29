@@ -163,11 +163,11 @@ long maxId;
 	public List<PersonDto> removeStudentsLessMarks(int nMarks) {
 		List<Student> studentsLessMark = studentRepo.findStudentsLessMark(nMarks);
 			studentsLessMark.forEach(s -> {
-				if(nMarks > 1) {
-					markRepo.findMarkByStudentId(s.getId()).forEach(markRepo::delete);
-					}
+				
+				
 				log.debug("student with id {} is going to be deleted", s.getId());
 				studentRepo.delete(s);
+			
 			});
 			return studentsLessMark.stream().map(Student::build).toList();
 		}

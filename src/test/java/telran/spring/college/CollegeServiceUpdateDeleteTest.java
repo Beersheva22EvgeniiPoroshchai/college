@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import telran.spring.college.dto.PersonDto;
@@ -91,6 +92,7 @@ StudentRepositary studentRepositary;
 	
 	@Test
 	@Order(7)
+	//@Transactional(readOnly = false, propagation = Propagation.NEVER)    //separate transactions
 	@Sql(scripts = {"college-read-test-script.sql"})
 	void removeStudentsLessMark() {
 		List<PersonDto> studentsRemoved = collegeCervice.removeStudentsLessMarks(3);

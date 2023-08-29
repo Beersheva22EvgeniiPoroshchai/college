@@ -1,5 +1,7 @@
 package telran.spring.college.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import telran.spring.college.dto.PersonDto;
@@ -18,7 +20,8 @@ public class Student extends Person {
 	public static Student of(PersonDto person) {
 		return new Student(person);
 	}
-
 	
+	@OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)   //cascading remove by reverse relations
+	List<Mark> marks;
 	
-}
+	 }
