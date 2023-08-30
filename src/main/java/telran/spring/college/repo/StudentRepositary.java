@@ -36,7 +36,7 @@ public interface StudentRepositary extends JpaRepository<Student, Long> {
 			nativeQuery = true)
 	List<Student>findStudentsLessMark(int nMarks);
 	
-	
+	List<IdName> findDistinctByMarksSubjectTypeAndMarksMarkGreaterThanOrderById(SubjectType type, int mark);
 	
 	
 

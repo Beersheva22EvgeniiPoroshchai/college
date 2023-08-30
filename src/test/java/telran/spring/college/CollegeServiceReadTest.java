@@ -57,4 +57,26 @@ class CollegeServiceReadTest {
 	assertEquals(0,actual.get(4).getMark());
  
 	}
+	
+	@Test
+	void marksStudSubjTest() {
+		List<MarkDto> marks = collegeService.marksStudentSubject(124, "S2");
+		assertEquals(75, marks.get(0).getMark());
+		assertEquals(1, marks.size());
+	}
+	
+	@Test
+	void studentMarksSubjTest() {
+		List<IdName> students = collegeService.studentMarksSubject(SubjectType.BACK_END, 90);
+		assertEquals("vasya", students.get(0).getName());
+		assertEquals("rivka", students.get(1).getName());
+		assertEquals(2, students.size());
+		
+		
+		
+	}
+	
+	
+	
+	
 }

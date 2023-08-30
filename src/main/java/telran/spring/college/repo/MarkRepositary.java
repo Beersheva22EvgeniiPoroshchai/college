@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 import telran.spring.college.entity.Mark;
 
 public interface MarkRepositary extends JpaRepository<Mark, Integer> {
-	
+	List<Mark> findByStudentIdAndSubjectId(long studentId, String subjectId);
 }

@@ -23,6 +23,13 @@ public interface CollegeService {
 	SubjectDto updateLecturer(String subjectId, Long lecturerId);
 	List<PersonDto> removeStudentsNoMarks();
 	List<PersonDto> removeStudentsLessMarks(int nMarks);
+	
+	List<MarkDto> marksStudentSubject(long studentId, String subjectId);
+	List<IdName> studentMarksSubject(SubjectType type, int mark);
+	
+	
+
+	
 
 	
 }
