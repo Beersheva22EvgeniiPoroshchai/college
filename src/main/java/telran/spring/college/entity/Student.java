@@ -24,4 +24,4 @@ public class Student extends Person {
 	@OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)   //cascading remove by reverse relations
 	List<Mark> marks;
 	
-	 }
+	}
