@@ -38,6 +38,7 @@ public interface StudentRepositary extends JpaRepository<Student, Long> {
 	
 	
 	
+	
 
 }
 
