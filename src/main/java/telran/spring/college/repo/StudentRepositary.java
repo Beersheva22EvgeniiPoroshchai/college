@@ -3,6 +3,7 @@ package telran.spring.college.repo;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -30,12 +31,16 @@ public interface StudentRepositary extends JpaRepository<Student, Long> {
 			+ " left join marks on sl.id=student_id group by sl.id order by avg (mark) desc", nativeQuery = true)
 	List<StudentMark>findStudentsAvgMarks();
 	
-	@Query(value="select * from students_lecturers where dtype = 'Student' "
-			+ " and id in (select sl.id from students_lecturers sl left join marks on sl.id=student_id group by sl.id "
-			+ " having count(mark) < :nMarks)",
-			nativeQuery = true)
-	List<Student>findStudentsLessMark(int nMarks);
+	@Modifying
+	@Query(value="delete from students_lecturers where dtype = 'Student' and"
+			+ " id  in (select sl.id from students_lecturers sl left join marks on sl.id=student_id group by sl.id "
+			+ "having count(mark) < :nMarks)", nativeQuery=true)
+	void removeStudentsLessMark(int nMarks);
 	
+	@Query(value="select * from students_lecturers where dtype = 'Student' and"
+			+ " id  in (select sl.id from students_lecturers sl left join marks on sl.id=student_id group by sl.id "
+			+ "having count(mark) < :nMarks)", nativeQuery=true)
+	List<Student> findStudentsLessMarks(int nMarks);
 	
 	
 

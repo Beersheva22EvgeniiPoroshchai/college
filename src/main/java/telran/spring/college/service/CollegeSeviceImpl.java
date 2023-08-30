@@ -1,5 +1,6 @@
 package telran.spring.college.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -161,12 +162,15 @@ long maxId;
 	@Override
 	@Transactional(readOnly = false)
 	public List<PersonDto> removeStudentsLessMarks(int nMarks) {
-		List<Student> studentsLessMark = studentRepo.findStudentsLessMark(nMarks);
-			
+		List<Student> studentsForRemoving = studentRepo.findStudentsLessMarks(nMarks);
+			studentRepo.removeStudentsLessMark(nMarks);
 		
 
-			return studentsLessMark.stream().map(Student::build).toList();
-		}
+			return studentsForRemoving.stream().map(Student::build).toList();
+		
+	
+				}
+	
 	
 	}
 
