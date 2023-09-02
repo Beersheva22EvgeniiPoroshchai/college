@@ -1,6 +1,9 @@
 package telran.spring.college.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -9,6 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import telran.spring.college.dto.*;
@@ -27,6 +32,7 @@ final StudentRepositary studentRepo;
 final SubjectRepositary subjectRepo;
 final LecturerRepositary lecturerRepo;
 final MarkRepositary markRepo;
+final EntityManager em;
 @Value("${app.person.id.min:100000}")
 long minId;
 @Value("${app.person.id.max:999999}")
@@ -129,6 +135,10 @@ long maxId;
 	public List<StudentMark> studentsAvgMarks() {
 		return studentRepo.findStudentsAvgMarks();
 	}
+	
+	
+	
+	
 
 	@Override
 	@Transactional(readOnly = false)
@@ -164,12 +174,40 @@ long maxId;
 	public List<PersonDto> removeStudentsLessMarks(int nMarks) {
 		List<Student> studentsForRemoving = studentRepo.findStudentsLessMarks(nMarks);
 			studentRepo.removeStudentsLessMark(nMarks);
-		
-
 			return studentsForRemoving.stream().map(Student::build).toList();
-		
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public PersonDto removeLecturer(long lecturerId) {
+		Lecturer lecturerRemoved = lecturerRepo.findById(lecturerId).orElseThrow(() -> 
+			new NotFoundException(String.format("Lecturer with id %d does not exist", lecturerId)));
+		 lecturerRepo.delete(lecturerRemoved);
+		 return lecturerRemoved.build();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> jpqlQuery(String queryStr) {
+		Query query = em.createQuery(queryStr);
+		List<?> resultList = query.getResultList();
+		List<String> res = Collections.emptyList();
+		if (!resultList.isEmpty()) {
+			 res = resultList.get(0).getClass().isArray() ? processMultiprojectionQuery((List<Object[]>)resultList) :
+				 processSingleprojectionQuery((List<Object>)resultList);
+		}
+		return res;
+	}
+
+	private List<String> processSingleprojectionQuery(List<Object> resultList) {
+		return resultList.stream().map(Object::toString).toList();
+	}
+
+	private List<String> processMultiprojectionQuery(List<Object[]> resultList) {
+		return resultList.stream().map(Arrays::deepToString).toList();
+	}
 	
-				}
+	
 	
 	
 	}

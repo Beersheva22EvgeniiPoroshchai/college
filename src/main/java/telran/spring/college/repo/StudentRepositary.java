@@ -11,6 +11,7 @@ import telran.spring.college.dto.*;
 import telran.spring.college.entity.*;
 
 public interface StudentRepositary extends JpaRepository<Student, Long> {
+	
 
 	@Query(value="select sl.id as id, sl.name as name from (select * from students_lecturers where dtype='Student') sl "
 			+ "join marks on sl.id=student_id join subjects sbj on subject_id=sbj.id where lecturer_id=:lecturerId "
@@ -19,11 +20,9 @@ public interface StudentRepositary extends JpaRepository<Student, Long> {
 	List<IdName> findbestStudentsLecturer(@Param(value = "lecturerId") long lecturerId, int nStudents);
 
 
-	@Query(value="select sl.id as id, sl.name as name from (select * from students_lecturers where dtype='Student') sl"
-			+ " join marks on sl.id=student_id join subjects sbj on subject_id=sbj.id group by sl.id"
-			+ " having count(mark) > :nMarksThreshold and avg(mark) > (select avg(mark) from marks) order by avg (mark) desc ",
-			nativeQuery = true)
-	List<IdName> findStudentsAvgMarksGreaterCollegeAvg(int nMarksThreshold);
+	@Query("select student.id as id, student.name as name from Mark group by id "     //by Class
+			+ " having count(mark) > :nMarks and avg(mark) > (select avg (mark) from Mark) order by avg(mark) desc")
+	List<IdName> findStudentsAvgMarksGreaterCollegeAvg(int nMarks);
 	
 	
 	@Query(value="select sl.id as id, sl.name as name, coalesce(round(avg(mark)),0) as mark "
@@ -32,19 +31,20 @@ public interface StudentRepositary extends JpaRepository<Student, Long> {
 	List<StudentMark>findStudentsAvgMarks();
 	
 	@Modifying
-	@Query(value="delete from students_lecturers where dtype = 'Student' and"
-			+ " id  in (select sl.id from students_lecturers sl left join marks on sl.id=student_id group by sl.id "
-			+ "having count(mark) < :nMarks)", nativeQuery=true)
+	@Query("delete from Student where size(marks) < :nMarks")
 	void removeStudentsLessMark(int nMarks);
 	
 	@Query(value="select * from students_lecturers where dtype = 'Student' and"
 			+ " id  in (select sl.id from students_lecturers sl left join marks on sl.id=student_id group by sl.id "
 			+ "having count(mark) < :nMarks)", nativeQuery=true)
+	List<Student> findStudentsLessMark(int nMarks);
+	
+	 //jpql: we work with Class, not table (group by and aggreg functs not support)
+	@Query("select stud from Student stud where size(marks) < :nMarks")  
 	List<Student> findStudentsLessMarks(int nMarks);
 	
 	
-
-}
+	}	
 
 
 
