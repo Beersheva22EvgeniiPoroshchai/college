@@ -112,7 +112,7 @@ public class RandomDbCreation {
 		int hours = getRandomNumber(50, 500 + 1);
 		Long lecturer = randomLecturerId();
 		SubjectType subjectType = randomSubjectType();
-		return new SubjectDto(randomSubjectId(), name , hours , lecturer , subjectType );
+		return new SubjectDto("S"+index, name , hours , lecturer , subjectType );
 	}
 
 	private SubjectType randomSubjectType() {

@@ -11,10 +11,10 @@ import telran.spring.college.dto.PersonDto;
 @Table(name = "students_lecturers")
 
 //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)    //separated tables
-public class Person {
+abstract public class Person {
 	
 	@Id
-	long id;
+	public long id;
 	String name;
 	@Column(name = "birth_date")    //format for all types of database
   	@Temporal(TemporalType.DATE)     

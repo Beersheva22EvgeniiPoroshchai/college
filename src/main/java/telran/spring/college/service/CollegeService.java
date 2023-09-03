@@ -28,7 +28,7 @@ public interface CollegeService {
 	
 	PersonDto removeLecturer(long lecturerId);
 	
-	List<String> jpqlQuery (String queryStr);
+	List<String> jpqlQuery (QueryDto query);
 
 
 }

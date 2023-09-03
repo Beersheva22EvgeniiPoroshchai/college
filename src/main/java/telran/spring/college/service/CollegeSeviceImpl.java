@@ -111,10 +111,10 @@ long maxId;
 	public MarkDto addMark(MarkDto mark) {
 		long studentId = mark.getStudentId();
 		Student student = studentRepo.findById(studentId).orElseThrow(() -> 
-		new NotFoundException(String.format("Student with id %d doesn't exist in DB", studentId)));
+			new NotFoundException(String.format("Student with id %d doesn't exist in DB", studentId)));
 		String subjectId = mark.getSubjectId();
 		Subject subject = subjectRepo.findById(subjectId).orElseThrow(() -> 
-		new NotFoundException(String.format("Subject with id %s doesn't exist in DB", subjectId)));
+			new NotFoundException(String.format("Subject with id %s doesn't exist in DB", subjectId)));
 		Mark markEntity = new Mark(student, subject, mark.getMark());
 		MarkDto res = markRepo.save(markEntity).build(); 
 		log.debug("Mark added {}", res);
@@ -137,9 +137,6 @@ long maxId;
 	}
 	
 	
-	
-	
-
 	@Override
 	@Transactional(readOnly = false)
 	public SubjectDto updateHours(String subjectId, int hours) {
@@ -188,8 +185,12 @@ long maxId;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> jpqlQuery(String queryStr) {
-		Query query = em.createQuery(queryStr);
+	public List<String> jpqlQuery(QueryDto queryDto) {
+		Query query = em.createQuery(queryDto.query());
+		Integer limit = queryDto.limit();
+		if (limit != null && limit > 0) {
+			query.setMaxResults(limit);
+		}
 		List<?> resultList = query.getResultList();
 		List<String> res = Collections.emptyList();
 		if (!resultList.isEmpty()) {
